@@ -2,7 +2,7 @@
 
 require __DIR__ . "../../vendor/autoload.php";
 
-require "./src/Chat.php";
+require "../src/chat.php";
 
 use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
