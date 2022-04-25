@@ -1,0 +1,11 @@
+version: 0.1
+phases:
+  pre_build:
+    commands:
+      - composer install
+  build:
+    commands:
+      - phpunit tests
+  post_build:
+    commands:
+      - php ./bin/chat-server.php
