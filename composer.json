@@ -1,0 +1,18 @@
+{
+    "name": "user/web-socket-php",
+    "autoload": {
+        "psr-4": {
+            "User\\WebSocketPhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "PiniShteren",
+            "email": "pini5192@gmail.com"
+        }
+    ],
+    "require": {
+        "cboden/ratchet": "^0.4.4",
+        "react/zmq": "^0.4.0"
+    }
+}
