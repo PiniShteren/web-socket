@@ -45,22 +45,23 @@ class Chat implements MessageComponentInterface
     {
         $msgObg = json_decode($msg, TRUE);
         // for admins
-        $count = var_dump($this->clients->count());
-        if ($msgObg["type"] === "id") {
+        $count = $this->clients->count();
+        if ($msgObg["type"] != null && $msgObg["type"] === "id") {
             if ($count > 0) {
-                $this->clients->append(array("id" => $msgObg["id"], "connect" => $from, "name"=> $msgObg["name"]));
                 $newMsg = array("name"=>$msgObg["name"], "id"=> $msgObg["id"]);
                 $newMsg = json_encode($newMsg);
                 foreach ($this->clients as $client) {
                     $client["connect"]->send($newMsg);
                 }
+                $this->clients->append(array("id" => $msgObg["id"], "connect" => $from, "name"=> $msgObg["name"]));
             } else {
                 $this->clients->append(array("id" => $msgObg["id"], "connect" => $from));
             }
         } else {
+            $newObg = json_encode($msgObg);
             foreach ($this->clients as $client) {
                 if ($client["id"] === $msgObg["to_id"]) {
-                    $client["connect"]->send($msgObg);
+                    $client["connect"]->send($newObg);
                 }
             }
         }
