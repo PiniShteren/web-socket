@@ -2,12 +2,16 @@
 
 require __DIR__ . "../../vendor/autoload.php";
 
-require __DIR__ . "../../src/chat.php";
+require "../src/Chat.php";
 
 use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
 use MyApp\Chat;
+
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 
 $server = IoServer::factory(
@@ -16,7 +20,7 @@ $server = IoServer::factory(
             new Chat()
         )
     ),
-    8282
+    $_ENV['PORT']
 );
 
 $server->run();

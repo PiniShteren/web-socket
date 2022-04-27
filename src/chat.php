@@ -1,21 +1,5 @@
 <?php
-/*
 
-
-{
-    "type": "id",
-    "id": "39fmdp%dfjkg"
-    "name": "pini"
-}
-
-{
-    "type": "msg",
-    "to_id": "39fmdp%dfjkg",
-    "from_id": "39fmdp%dfjkg",
-    "msg": "ekogihepwo kgujg"
-}
-
-*/ 
 namespace MyApp;
 
 require __DIR__ . "../../vendor/autoload.php";
@@ -26,42 +10,34 @@ use Ratchet\ConnectionInterface;
 
 class Chat implements MessageComponentInterface
 {
-
     protected $clients;
-    protected $admins;
 
     public function __construct()
     {
         $this->clients = new ArrayObject();
-        $this->admins = new ArrayObject();
     }
 
     public function onOpen(ConnectionInterface $conn)
     {
-        // $this->clients->attach(($conn));
+        // echo $conn->resourceId;
     }
 
     public function onMessage(ConnectionInterface $from, $msg)
     {
         $msgObg = json_decode($msg, TRUE);
-        // for admins
-        $count = $this->clients->count();
-        if ($msgObg["type"] != null && $msgObg["type"] === "id") {
-            if ($count > 0) {
-                $newMsg = array("name"=>$msgObg["name"], "id"=> $msgObg["id"]);
-                $newMsg = json_encode($newMsg);
-                foreach ($this->clients as $client) {
-                    $client["connect"]->send($newMsg);
-                }
-                $this->clients->append(array("id" => $msgObg["id"], "connect" => $from, "name"=> $msgObg["name"]));
-            } else {
-                $this->clients->append(array("id" => $msgObg["id"], "connect" => $from));
-            }
+        if ($msgObg['type'] === "id") {
+            $this->clients->append(array("id" => $msgObg["payload"], "connect" => $from, "game_id" => $msgObg["game_id"]));
+            // var_dump($this->clients->count());
         } else {
-            $newObg = json_encode($msgObg);
             foreach ($this->clients as $client) {
-                if ($client["id"] === $msgObg["to_id"]) {
-                    $client["connect"]->send($newObg);
+                if ($msgObg["to_id"] === "all") {
+                    $client["connect"]->send($msgObg["payload"]);
+                } else {
+                    echo strpos($msgObg["to_id"], $client["id"]);
+                    echo $client["game_id"] === $msgObg["game_id"] ? "true" : "false";
+                    if (strpos($msgObg["to_id"], $client["id"]) >= 0 && $client["game_id"] === $msgObg["game_id"]) {
+                        $client["connect"]->send($msgObg["payload"]);
+                    }
                 }
             }
         }
@@ -73,7 +49,7 @@ class Chat implements MessageComponentInterface
             if ($client["connect"] === $conn) {
                 $this->clients->offsetUnset($index);
             }
-            var_dump($this->clients->count());
+            // var_dump($this->clients->count());
         }
     }
 

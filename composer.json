@@ -13,9 +13,6 @@
     ],
     "require": {
         "cboden/ratchet": "^0.4.4",
-        "react/zmq": "^0.4.0"
-    },
-    "config": {
-        "platform-check": false
+        "vlucas/phpdotenv": "^5.4"
     }
 }
